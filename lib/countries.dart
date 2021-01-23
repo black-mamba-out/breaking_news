@@ -51,8 +51,16 @@ class Country {
 List<Country> getCountries() {
   return <Country>[
     Country('tr', 'Türkiye'),
-    Country('us', 'United States'),
-    Country('gb', 'United Kingdom'),
     Country('ca', 'Canada'),
+    Country('cn', 'China'),
+    Country('fr', 'France'),
+    Country('de', 'Germany'),
+    Country('il', 'Israel'),
+    Country('it', 'Italy'),
+    Country('ru', 'Russia'),
+    Country('se', 'Sweden'),
+    Country('ae', 'UAE'),
+    Country('gb', 'UK'),
+    Country('us', 'USA'),
   ];
 }

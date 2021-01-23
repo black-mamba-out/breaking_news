@@ -9,11 +9,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: true,
-      title: 'Breaking News',
-      theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
+      debugShowCheckedModeBanner: false,
+      title: 'Sí News',
+      theme: ThemeData.dark(),
       home: HeadlineList(),
     );
   }

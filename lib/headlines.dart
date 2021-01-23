@@ -1,3 +1,4 @@
+import 'package:breaking_news/categories.dart';
 import 'package:breaking_news/countries.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image/network.dart';
@@ -13,9 +14,13 @@ class HeadlineList extends StatefulWidget {
 
 class _HeadlineListState extends State<HeadlineList> {
   String newsApiKey;
-  Country _country;
-  List<Country> _countries;
   String _noImageUrl;
+
+  Country _currentCountry;
+  List<Country> _countries;
+
+  Category _currentCategory;
+  List<Category> _categories;
 
   Future<List<dynamic>> fetchHeadlines(String url) async {
     var result = await http.get(url);
@@ -24,7 +29,11 @@ class _HeadlineListState extends State<HeadlineList> {
   }
 
   String getNewsTopHeadlinesUrl() {
-    return 'https://newsapi.org/v2/top-headlines?country=${_country.code}&apiKey=$newsApiKey';
+    var url = _currentCategory.id == 0
+        ? 'https://newsapi.org/v2/top-headlines?country=${_currentCountry.code}&apiKey=$newsApiKey'
+        : 'https://newsapi.org/v2/top-headlines?country=${_currentCountry.code}&category=${_currentCategory.name}&apiKey=$newsApiKey';
+
+    return url;
   }
 
   String getSourceName(Map<dynamic, dynamic> source) {
@@ -34,7 +43,11 @@ class _HeadlineListState extends State<HeadlineList> {
   @override
   void initState() {
     _countries = getCountries();
-    _country = _countries.first;
+    _currentCountry = _countries.first;
+
+    _categories = getCategories();
+    _currentCategory = _categories.first;
+
     newsApiKey = "daf31c9b20414856a99ef65f74b8a3b3";
     _noImageUrl =
         "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/600px-No_image_available.svg.png";
@@ -44,7 +57,13 @@ class _HeadlineListState extends State<HeadlineList> {
 
   changeCountry(Country country) {
     setState(() {
-      _country = country;
+      _currentCountry = country;
+    });
+  }
+
+  changeCategory(Category category) {
+    setState(() {
+      _currentCategory = category;
     });
   }
 
@@ -64,10 +83,27 @@ class _HeadlineListState extends State<HeadlineList> {
       ),
       body: Column(
         children: <Widget>[
-          CountriesDropdownList(
-              changeCountry: changeCountry,
-              currentCountry: _country,
-              countries: _countries),
+          SizedBox(
+            height: 20,
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                child: CountriesDropdownList(
+                  changeCountry: changeCountry,
+                  currentCountry: _currentCountry,
+                  countries: _countries,
+                ),
+              ),
+              Expanded(
+                child: CategoriesDropdownList(
+                  changeCategory: changeCategory,
+                  currentCategory: _currentCategory,
+                  categories: _categories,
+                ),
+              ),
+            ],
+          ),
           Expanded(
             child: FutureBuilder<dynamic>(
               future: fetchHeadlines(getNewsTopHeadlinesUrl()),
